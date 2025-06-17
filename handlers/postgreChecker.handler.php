@@ -1,19 +1,15 @@
 <?php
+include_once __DIR__ . '/envSetter.util.php';
 
-$host = "localhost"; 
-$port = "5555";
-$username = "user";
-$password = "password";
-$dbname = "adtask3";
+try {
+    $pgConn = pg_connect("host=$pgHost port=$pgPort dbname=$pgDb user=$pgUser password=$pgPass");
 
-$conn_string = "host=$host port=$port dbname=$dbname user=$username password=$password";
-
-$dbconn = pg_connect($conn_string);
-
-if (!$dbconn) {
-    echo "❌ Connection Failed: ", pg_last_error() . "  <br>";
-    exit();
-} else {
-    echo "✔️ PostgreSQL Connection  <br>";
-    pg_close($dbconn);
+    if ($pgConn) {
+        echo "✅ PostgreSQL Connected successfully.<br>";
+    } else {
+        echo "❌ Connection Failed:<br>";
+        echo pg_last_error();
+    }
+} catch (Exception $e) {
+    echo "❌ PostgreSQL connection failed: " . $e->getMessage();
 }
