@@ -1,10 +1,10 @@
 <?php
 
-$host = "host.docker.internal"; 
+$host = "localhost"; 
 $port = "5555";
 $username = "user";
 $password = "password";
-$dbname = "adtask3_postgres";
+$dbname = "adtask3";
 
 $conn_string = "host=$host port=$port dbname=$dbname user=$username password=$password";
 

@@ -5,18 +5,13 @@ services:
     container_name: ad-task-3-php-service
     ports:
       - "8000:8000"
-    develop:
-      watch:
-        - path: .
-          target: /var/www/html
-          action: sync
-        - path: ./composer.json
-          action: rebuild
-        - path: ./composer.lock
-          action: rebuild
+    volumes:
+      - .:/var/www/html
+    working_dir: /var/www/html
+    command: php -S 0.0.0.0:8000
     depends_on:
-      ad-task-3-mongodb
-      ad-task-3-postgresql
+      - mongodb
+      - postgresql
 
   mongodb:
     image: mongo:latest
@@ -24,11 +19,11 @@ services:
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: rootPassword
-      MONGO_INITDB_DATABASE: adtask3_mongod
+      MONGO_INITDB_DATABASE: adtask3
     ports:
       - "23567:27017"
     volumes:
-      - ad-task-3-php:/data/db/mongodb
+      - ad-task-3-php-mongodb:/data/db
 
   postgresql:
     image: postgres:15
@@ -37,14 +32,14 @@ services:
     environment:
       POSTGRES_USER: user
       POSTGRES_PASSWORD: password
-      POSTGRES_DB: adtask3_postgres
+      POSTGRES_DB: adtask3
     ports:
       - "5555:5432"
     volumes:
-      - ad-task-3-php-postgresql:/data/db/postgresql
+      - ad-task-3-php-postgresql:/var/lib/postgresql/data
 
 volumes:
-ad-task-3-php-mongodb:
+  ad-task-3-php-mongodb:
     driver: local
-ad-task-3-php-postgresql:
+  ad-task-3-php-postgresql:
     driver: local

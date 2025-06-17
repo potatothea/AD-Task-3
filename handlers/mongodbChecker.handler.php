@@ -1,6 +1,6 @@
 <?php
 try {
-    $mongo = new MongoDB\Driver\Manager("mongodb://host.docker.internal:23567");
+    $mongo = new MongoDB\Driver\Manager("mongodb://localhost:23567");
 
     $command = new MongoDB\Driver\Command(["ping" => 1]);
     $mongo->executeCommand("admin", $command);
