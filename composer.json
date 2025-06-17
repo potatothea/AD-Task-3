@@ -1,15 +1,16 @@
 {
     "name": "altheazuleikasadicon/ad-task-3",
-    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Altheazuleikasadicon\\AdTask3\\": "src/"
+        }
+    },
     "authors": [
         {
-            "name": "potatothea",
-            "email": "202310621@fit.edu.ph"
+            "name": "AltheaZuleika",
+            "email": "sadiconaltheazuleika@gmail.com"
         }
     ],
-    "scripts": {
-        "start": "php -S localhost:8000 router.php"
-    },
     "require": {
         "vlucas/phpdotenv": "^5.6"
     }

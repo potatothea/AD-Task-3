@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../vendor/autoload.php';
 define("HANDLERS_PATH", __DIR__ . "/handlers");
 
 $value = [
