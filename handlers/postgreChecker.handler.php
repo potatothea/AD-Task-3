@@ -1,15 +1,26 @@
 <?php
-$pgHost = $_ENV["PG_HOST"] ?? '';
-$pgPort = $_ENV["PG_PORT"] ?? '';
-$pgDb   = $_ENV["PG_DB"] ?? '';
-$pgUser = $_ENV["PG_USER"] ?? '';
-$pgPass = $_ENV["PG_PASS"] ?? '';
+require_once __DIR__ . '/../utils/envSetter.util.php';
 
-$connStr = "host=$pgHost port=$pgPort dbname=$pgDb user=$pgUser password=$pgPass";
-$pgConn = pg_connect($connStr);
+// Fetch config values
+$host     = $typeConfig['pg_host'] ?? 'localhost';
+$port     = $typeConfig['pg_port'] ?? '5432';
+$username = $typeConfig['pg_user'] ?? 'user';
+$password = $typeConfig['pg_pass'] ?? 'password';
+$dbname   = $typeConfig['pg_db'] ?? 'adtask3';
 
-if ($pgConn) {
-    echo "✅ PostgreSQL Connection Successful<br>";
+// Build connection string
+$conn_string = "host={$host} port={$port} dbname={$dbname} user={$username} password={$password}";
+
+// Optional: Uncomment this to debug what you're actually using
+// echo "🔍 Connection string: {$conn_string}<br>";
+
+$dbconn = pg_connect($conn_string);
+
+// Check connection result
+if (!$dbconn) {
+    echo "❌ Connection Failed: " . pg_last_error() . "<br>";
+    exit();
 } else {
-    echo "❌ Connection Failed:<br>" . pg_last_error();
+    echo "✅ PostgreSQL Connection Successful<br>";
+    pg_close($dbconn);
 }
