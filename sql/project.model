@@ -1,0 +1,11 @@
+IF OBJECT_ID('projects', 'U') IS NULL
+BEGIN
+    CREATE TABLE projects (
+        id INT IDENTITY(1,1) PRIMARY KEY,
+        project_name VARCHAR(100) NOT NULL,
+        description TEXT,
+        start_date DATE,
+        end_date DATE
+    );
+END
+
