@@ -1,36 +1,41 @@
 <?php
 declare(strict_types=1);
 
-require_once __DIR__ . '/envSetter.util.php';
+require 'vendor/autoload.php';
 
-try {
-    // Build DSN and connect
-    $dsn = "pgsql:host={$typeConfig['pg_host']};port={$typeConfig['pg_port']};dbname={$typeConfig['pg_db']}";
-    $pdo = new PDO($dsn, $typeConfig['pg_user'], $typeConfig['pg_pass'], [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-    ]);
+require 'bootstrap.php';
 
-    echo "✅ Connected to PostgreSQL successfully\n";
+require_once _DIR_ . '/envSetter.util.php';
 
-    // Load schema
-    echo "📄 Applying schema from database/user.model.sql…\n";
-    $sqlFile = BASE_PATH . '/database/user.model.sql';
-    $sql = file_get_contents($sqlFile);
+$dsn = "pgsql:host={$pgConfig['host']};port={$pgConfig['port']};dbname={$pgConfig['db']}";
+$pdo = new PDO($dsn, $pgConfig['user'], $pgConfig['pass'], [
+  PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+]);
 
-    if ($sql === false) {
-        throw new RuntimeException("❌ Could not read SQL file: $sqlFile");
-    }
+echo "✅ Connected to PostgreSQL via PDO\n";
 
-    $pdo->exec($sql);
-    echo "✅ Schema applied successfully\n";
+$schemas = [
+  'user.model.sql',
+  'project.model.sql',
+  'project_user.model.sql',
+  'tasks.model.sql',
+];
 
-    // Truncate tables
-    echo "🧹 Truncating tables…\n";
-    foreach (['users'] as $table) {
-        $pdo->exec("TRUNCATE TABLE {$table} RESTART IDENTITY CASCADE;");
-    }
-    echo "✅ Tables truncated\n";
-
-} catch (Exception $e) {
-    echo "❌ Error: " . $e->getMessage() . "\n";
+foreach ($schemas as $file) {
+  $path = _DIR_ . '/../database/' . $file;
+  echo "📄 Applying schema from {$path}…\n";
+  $sql = file_get_contents($path);
+  if ($sql === false) {
+    throw new RuntimeException("❌ Could not read {$path}");
+  }
+  $pdo->exec($sql);
+  echo "✅ Successfully applied {$file}\n";
 }
+
+echo "🧹 Truncating tables…\n";
+foreach (['project_users', 'tasks', 'projects', 'users'] as $table) {
+  $pdo->exec("TRUNCATE TABLE {$table} RESTART IDENTITY CASCADE;");
+}
+echo "✅ Tables truncated successfully.\n";
+
+echo "🎉 All tables have been reset and recreated successfully.\n";
