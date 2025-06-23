@@ -2,7 +2,8 @@
 require_once  UTILS_PATH .'/envSetter.util.php';
 
 try {
-    $mongo = new MongoDB\Driver\Manager($typeConfig['mongo_uri']);
+
+    $mongo = new MongoDB\Driver\Manager("mongodb://localhost:23567");
 
     $command = new MongoDB\Driver\Command(["ping" => 1]);
     $mongo->executeCommand("admin", $command);

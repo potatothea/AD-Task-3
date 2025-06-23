@@ -4,10 +4,10 @@ declare(strict_types=1);
 require 'vendor/autoload.php';
 require 'bootstrap.php';
 
-define('UTILS_PATH', BASE_PATH . '/utils');
+if (!defined('UTILS_PATH')) {
+    define('UTILS_PATH', BASE_PATH . '/utils');
+}
 require_once UTILS_PATH . '/envSetter.util.php';
-
-
 
 $dsn = "pgsql:host={$pgConfig['host']};port={$pgConfig['port']};dbname={$pgConfig['db']}";
 $pdo = new PDO($dsn, $pgConfig['user'], $pgConfig['pass'], [
@@ -17,9 +17,9 @@ $pdo = new PDO($dsn, $pgConfig['user'], $pgConfig['pass'], [
 echo "✅ Connected to PostgreSQL via PDO\n";
 
 $dropTables = [
-  'project_users',
+  'meeting_users',
   'tasks',
-  'projects',
+  'meetings',  
   'users',
 ];
 
@@ -32,13 +32,13 @@ echo "✅ All dependent tables dropped successfully.\n";
 
 $schemas = [
   'user.model.sql',
-  'project.model.sql',
-  'project_user.model.sql',
+  'meeting.model.sql',
+  'meeting_user.model.sql',
   'tasks.model.sql',
 ];
 
 foreach ($schemas as $file) {
-  $path = __DIR__ . '/../database/' . $file;
+  $path = "database/{$file}";  
   echo "📄 Applying schema from {$path}…\n";
   $sql = file_get_contents($path);
   if ($sql === false) {
@@ -47,5 +47,6 @@ foreach ($schemas as $file) {
   $pdo->exec($sql);
   echo "✅ Successfully applied {$file}\n";
 }
+
 
 echo "🎉 Database reset and schemas recreated successfully.\n";

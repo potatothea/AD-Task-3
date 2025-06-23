@@ -25,7 +25,7 @@ if (!function_exists('pg_connect')) {
     if (!$dbconn) {
         echo "❌ PostgreSQL connection failed.\n";
     } else {
-        echo "✅ PostgreSQL connected successfully.\n";
+        echo "✔️ PostgreSQL connected successfully.\n";
         pg_close($dbconn);
     }
 }

@@ -1,17 +1,19 @@
 <?php
 if (!defined('BASE_PATH')) {
-    define('BASE_PATH', dirname(__DIR__));
+    define('BASE_PATH', ''); 
 }
 
-require_once BASE_PATH . '/vendor/autoload.php';
+require_once 'vendor/autoload.php';
 
-$dotenv = Dotenv\Dotenv::createImmutable(BASE_PATH);
+
+$dotenv = Dotenv\Dotenv::createImmutable('.');
 $dotenv->load();
 
-$envPath = BASE_PATH . '/.env';
-if (!file_exists($envPath)) {
-    die("❌ .env file not found at: $envPath");
+
+if (!file_exists('.env')) {
+    die("❌ .env file not found at: .env");
 }
+
 
 $requiredKeys = ['PG_HOST', 'PG_PORT', 'PG_DB', 'PG_USER', 'PG_PASS', 'MONGO_URI', 'MONGO_DB'];
 foreach ($requiredKeys as $key) {
@@ -19,9 +21,12 @@ foreach ($requiredKeys as $key) {
         die("❌ Missing ENV key: $key");
     }
 }
-if (php_sapi_name() === 'cli'){
-    $ENV['PG_HOST'] = 'localhost';
+
+
+if (php_sapi_name() === 'cli') {
+    $_ENV['PG_HOST'] = 'localhost'; 
 }
+
 $typeConfig = [
     'env_name'   => $_ENV['ENV_adtask3'] ?? 'local',
 
