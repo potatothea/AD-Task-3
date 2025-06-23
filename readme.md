@@ -135,5 +135,6 @@ AD-ProjectName
 
 | Title        | Purpose                                                                       | Link          |
 | ------------ | ----------------------------------------------------------------------------- | ------------- |
-| ChatGPT      | Helps guide me step-by-step through tasks by providing clear explanations.    | chatgpt.com.  |
+| ChatGPT      | Helps guide me step-by-step through tasks by providing clear explanations.    | chatgpt.com  |
+
 
