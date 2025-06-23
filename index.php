@@ -1,6 +1,7 @@
 <?php
-define("HANDLERS_PATH", __DIR__ . "/handlers");
+require_once 'bootstrap.php'; 
 
+define("HANDLERS_PATH", getcwd() . "/handlers");
 ?>
 <html>
     <body>

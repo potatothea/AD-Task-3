@@ -19,7 +19,9 @@ foreach ($requiredKeys as $key) {
         die("❌ Missing ENV key: $key");
     }
 }
-
+if (php_sapi_name() === 'cli'){
+    $ENV['PG_HOST'] = 'localhost';
+}
 $typeConfig = [
     'env_name'   => $_ENV['ENV_adtask3'] ?? 'local',
 
