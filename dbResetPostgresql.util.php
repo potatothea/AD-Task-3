@@ -1,11 +1,12 @@
 <?php
 declare(strict_types=1);
-
 require 'vendor/autoload.php';
-
 require 'bootstrap.php';
 
-require_once _DIR_ . '/envSetter.util.php';
+if (!defined('UTILS_PATH')) {
+    define('UTILS_PATH', BASE_PATH . '/utils');
+}
+require_once UTILS_PATH . '/envSetter.util.php';
 
 $dsn = "pgsql:host={$pgConfig['host']};port={$pgConfig['port']};dbname={$pgConfig['db']}";
 $pdo = new PDO($dsn, $pgConfig['user'], $pgConfig['pass'], [
