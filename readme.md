@@ -54,7 +54,6 @@
 This project sets up a PHP development environment using Docker with PostgreSQL and MongoDB databases for seamless backend integration. It includes customizable configurations in composer.json, Docker Compose, and environment files to tailor the setup. Health checkers ensure database connections are active, while phpdotenv manages environment variables securely. The database schema is designed through SQL models and can be automatically reset and initialized using a utility script. 
 ### Technology
 
-<!-- TODO: List of Technology Used -->
 #### Language
 
 ![PHP](https://img.shields.io/badge/PHP-777BB4?style=for-the-badge&logo=php&logoColor=white)
@@ -130,8 +129,6 @@ AD-ProjectName
 > The following should be renamed: name.css, name.js, name.jpeg/.jpg/.webp/.png, name.component.php(but not the part of the `component.php`), Name.utils.php(but not the part of the `utils.php`)
 
 ## Resources
-
-<!-- TODO: Add References -->
 
 | Title        | Purpose                                                                       | Link          |
 | ------------ | ----------------------------------------------------------------------------- | ------------- |
