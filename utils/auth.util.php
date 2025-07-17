@@ -18,7 +18,7 @@ class Auth
 
         foreach ($users as $user) {
             if ($user['username'] === $username) {
-                if ($user['password'] === $password) { // plain check; you can use password_verify for hashed
+                if ($user['password'] === $password) { 
                     $_SESSION['user'] = $user;
                     return ['status' => true, 'message' => 'Login successful'];
                 } else {

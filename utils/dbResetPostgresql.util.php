@@ -1,14 +1,16 @@
 <?php
 declare(strict_types=1);
 
+// 1) Composer autoload
 require 'vendor/autoload.php';
+
+// 2) Composer bootstrap
 require 'bootstrap.php';
 
-if (!defined('UTILS_PATH')) {
-    define('UTILS_PATH', BASE_PATH . '/utils');
-}
+// 3) envSetter
 require_once UTILS_PATH . '/envSetter.util.php';
 
+// ——— Connect to PostgreSQL ———
 $dsn = "pgsql:host={$pgConfig['host']};port={$pgConfig['port']};dbname={$pgConfig['db']}";
 $pdo = new PDO($dsn, $pgConfig['user'], $pgConfig['pass'], [
   PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -16,20 +18,7 @@ $pdo = new PDO($dsn, $pgConfig['user'], $pgConfig['pass'], [
 
 echo "✅ Connected to PostgreSQL via PDO\n";
 
-$dropTables = [
-  'meeting_users',
-  'tasks',
-  'meetings',  
-  'users',
-];
-
-foreach ($dropTables as $table) {
-  echo "🗑️ Dropping table if exists: {$table}\n";
-  $pdo->exec("DROP TABLE IF EXISTS {$table} CASCADE;");
-}
-
-echo "✅ All dependent tables dropped successfully.\n";
-
+// ——— Apply All Schemas First ———
 $schemas = [
   'user.model.sql',
   'meeting.model.sql',
@@ -38,7 +27,7 @@ $schemas = [
 ];
 
 foreach ($schemas as $file) {
-  $path = "database/{$file}";  
+  $path = BASE_PATH . '/database/' . $file;
   echo "📄 Applying schema from {$path}…\n";
   $sql = file_get_contents($path);
   if ($sql === false) {
@@ -48,5 +37,12 @@ foreach ($schemas as $file) {
   echo "✅ Successfully applied {$file}\n";
 }
 
+// ——— Then Truncate the Tables ———
+echo "🧹 Truncating tables…\n";
+// Truncate in FK-safe order (child to parent)
+foreach (['meeting_users', 'tasks', 'meeting', 'users'] as $table) {
+  $pdo->exec("TRUNCATE TABLE {$table} RESTART IDENTITY CASCADE;");
+}
+echo "✅ Tables truncated successfully.\n";
 
-echo "🎉 Database reset and schemas recreated successfully.\n";
+echo "🎉 All tables have been reset and recreated successfully.\n";

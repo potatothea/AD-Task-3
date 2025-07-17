@@ -1,15 +1,14 @@
 <?php
 declare(strict_types=1);
 
-require 'vendor/autoload.php';
-require 'bootstrap.php';
+// ✅ Load bootstrap to define BASE_PATH, UTILS_PATH, etc.
+require_once 'bootstrap.php';
 
-if (!defined('UTILS_PATH')) {
-    define('UTILS_PATH', BASE_PATH . '/utils');
-}
-
+// ✅ Load dependencies and env
+require_once BASE_PATH . '/vendor/autoload.php';
 require_once UTILS_PATH . '/envSetter.util.php';
 
+// ✅ Connect to PostgreSQL
 $dsn = "pgsql:host={$pgConfig['host']};port={$pgConfig['port']};dbname={$pgConfig['db']}";
 $pdo = new PDO($dsn, $pgConfig['user'], $pgConfig['pass'], [
   PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
@@ -17,42 +16,31 @@ $pdo = new PDO($dsn, $pgConfig['user'], $pgConfig['pass'], [
 
 echo "✅ Connected to PostgreSQL via PDO\n";
 
-echo "🗑️ Dropping old tables…\n";
-foreach ([
-  'projects',
-  'meeting_users',
-  'tasks',
-  'meetings',
-  'users',
-] as $table) {
+// ✅ Drop old tables
+echo "🧨 Dropping old tables…\n";
+foreach (['meeting_users', 'tasks', 'meeting', 'users'] as $table) {
   $pdo->exec("DROP TABLE IF EXISTS {$table} CASCADE;");
-  echo "🗑️ Dropped {$table}\n";
+  echo "❌ Dropped table: {$table}\n";
 }
 
-echo "Applying schema from database/users.model.sql…\n";
-
-$sql = file_get_contents('database/user.model.sql');
-if ($sql === false) {
-    throw new RuntimeException("❌ Could not read database/user.model.sql");
-}
-$pdo->exec($sql);
-echo "✅ Creation Success from the database/user.model.sql\n";
-
+// ✅ Apply updated schemas
 $schemas = [
+  'user.model.sql',
   'meeting.model.sql',
   'meeting_user.model.sql',
   'tasks.model.sql',
-  
 ];
 
 foreach ($schemas as $file) {
-    echo "Applying schema from database/{$file}…\n";
-    $sql = file_get_contents("database/{$file}");
-    if ($sql === false) {
-        throw new RuntimeException("❌ Could not read database/{$file}");
-    }
-    $pdo->exec($sql);
-    echo "✅ Creation Success from the database/{$file}\n";
+  $path = BASE_PATH . '/database/' . $file;
+  echo "📄 Applying schema from {$path}…\n";
+  $sql = file_get_contents($path);
+  if ($sql === false) {
+    throw new RuntimeException("❌ Could not read {$path}");
+  } else {
+    echo "✅ Creation Success from {$path}\n";
+  }
+  $pdo->exec($sql);
 }
 
-echo "🎉 Database migration complete!\n";
+echo "🎉 Migration complete!\n";
